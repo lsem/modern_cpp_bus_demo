@@ -165,3 +165,16 @@ int main() {
   bus.raise(messages::statistics::message1{});
   bus.raise(messages::core::connected{});
 }
+
+// Output:
+// void core_messages_handler::operator()(const messages::core::disconnected&)
+// void core_messages_handler::operator()(const messages::core::connected&)
+// void statistics_and_core_handler::operator()(const messages::core::connected&)
+// functional_handler()::<lambda(const messages::core::connected&)>
+// void statistics_and_core_handler::operator()(const messages::statistics::message1&)
+// functional_handler()::<lambda(const messages::statistics::message1&)>
+// void core_messages_handler::operator()(const messages::core::connected&)
+// void statistics_and_core_handler::operator()(const messages::core::connected&)
+// connected twice, raising message2
+// functional_handler()::<lambda(const messages::statistics::message2&)>
+// functional_handler()::<lambda(const messages::core::connected&)>
