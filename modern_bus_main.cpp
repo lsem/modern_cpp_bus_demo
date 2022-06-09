@@ -9,8 +9,55 @@
 #include <type_traits>
 #include <vector>
 
-#include "core_messages.hpp"
-#include "statistics_messages.hpp"
+template <class... Ts>
+struct type_list {};
+
+template <class L1, class L2>
+struct type_list_cat;
+
+template <class... L1, class... L2>
+struct type_list_cat<type_list<L1...>, type_list<L2...>> {
+  using result = type_list<L1..., L2...>;
+};
+template <class L1, class L2>
+using type_list_cat_t = typename type_list_cat<L1, L2>::result;
+
+
+using typeid_t = std::string;
+
+template <class T>
+struct typeid_for;
+
+#define generate_typeid_for(X)              \
+  template <>                               \
+  struct typeid_for<X> {                    \
+    static std::string get() { return #X; } \
+  };
+
+namespace messages::core {
+struct connection_added {};
+struct connected {};
+struct disconnected {};
+
+using exported = type_list<connection_added, connected, disconnected>;
+
+}  // namespace messages::core
+
+generate_typeid_for(messages::core::connection_added);
+generate_typeid_for(messages::core::connected);
+generate_typeid_for(messages::core::disconnected);
+
+
+namespace messages::statistics {
+struct message1 {};
+struct message2 {};
+
+using exported = type_list<message1, message2>;
+}  // namespace messages::statistics
+
+generate_typeid_for(messages::statistics::message1);
+generate_typeid_for(messages::statistics::message2);
+
 
 template <class T>
 struct spell_type;
